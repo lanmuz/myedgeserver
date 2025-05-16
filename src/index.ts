@@ -11,6 +11,20 @@ import { cleanVoices } from "./lib/clean"
 
 const app = new Koa()
 const router = new Router()
+// 自定义中间件设置 CORS 响应头
+app.use(async (ctx, next) => {
+    ctx.set("Access-Control-Allow-Origin", "*"); // 允许所有域名
+    ctx.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS"); // 允许的 HTTP 方法
+    ctx.set("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept"); // 允许的请求头
+
+    // 处理 OPTIONS 预检请求
+    if (ctx.method === "OPTIONS") {
+        ctx.status = 204; // 返回无内容状态码
+        return;
+    }
+
+    await next();
+})
 
 app.use(Static("public"))
 
